@@ -1,0 +1,72 @@
+package ia;
+
+import jason.*;
+import jason.asSyntax.*;
+import jason.asSemantics.*;
+import java.util.List;
+
+public class highest extends DefaultInternalAction{
+	@Override
+	public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception{
+		try{
+			String agent = args[0].toString();
+			int cDay = (int)((NumberTerm)args[1]).solve();
+			int cTime = (int)((NumberTerm)args[2]).solve();
+		
+			int closestDay = 8;
+			int closestTime = 25;
+			
+			ListTerm assignmentsIn = (ListTerm) args[3];
+			List<Term> assignments = assignmentsIn.getAsList();
+			
+			for(int i = 0; i < assignments.size();i++){
+				for(int j = 0; j < i;j++){
+					String course1 = ((Structure) assignments.get(i)).getTerm(0).toString();
+					String course2 = ((Structure) assignments.get(j)).getTerm(0).toString();
+					//System.out.println("Comparing" + course1 + "," + course2);
+					if (course1.equals(course2)){
+						assignments.remove(i);
+						i--;
+						j--;
+					}
+				}
+			}
+			for(int i = 0; i < assignments.size();i++){
+				Structure assignment = (Structure) assignments.get(i);
+				String course = assignment.getTerm(0).toString();
+				int startDay = (int)((NumberTerm)assignment.getTerm(1)).solve();
+				int startTime = (int)((NumberTerm)assignment.getTerm(2)).solve();
+				int endDay = (int)((NumberTerm)assignment.getTerm(3)).solve();
+				int endTime = (int)((NumberTerm)assignment.getTerm(4)).solve();
+				int hoursLeft = (int)((NumberTerm)assignment.getTerm(5)).solve();
+				//System.out.println(agent + "," + course + "," + Integer.toString(hoursLeft));
+				if (hoursLeft != 0){
+					if(startDay < cDay || (startDay == cDay && startTime <= cTime)){
+						if(endDay < closestDay||endDay == closestDay && endTime < closestTime){
+							closestDay = endDay;
+							closestTime = endTime;
+						}
+					}
+				}
+			}
+			
+			ListTerm result = new ListTermImpl();
+			result.add((Term) new NumberTermImpl(closestDay));
+			result.add((Term) new NumberTermImpl(closestTime));
+			//System.out.println("Closest assignment for " + agent + ":" + Integer.toString(closestDay) + "," + Integer.toString(closestTime));
+
+			//double r = p1x.solve();
+			//NumberTerm rDay = new NumberTermImpl(closestDay);
+			//NumberTerm rTime = new NumberTermImpl(closestTime);
+			
+			return un.unifies(result,args[4]);
+		} catch (ArrayIndexOutOfBoundsException e){
+			throw new JasonException("ff");
+		} catch (ClassCastException e){
+			throw new JasonException("aa");
+		} catch (Exception e){
+			throw new JasonException("gg");
+		}
+	}
+
+}

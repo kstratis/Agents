@@ -1,0 +1,13 @@
+	//InfoSpeak simulation environment for ABS assignments 2011/12
+MAS infoSpeak {
+
+    infrastructure: Centralised
+
+    environment: ISEnv("infoSpeak.mas2j")
+    
+    agents: 
+	  lecturer #1;
+	  studiousStudent #1;
+      carefreeStudent #1; 
+	  balancedStudent #1;
+	 }
