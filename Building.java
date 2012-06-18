@@ -3,7 +3,7 @@
  */
 
 public class Building {
-
+#hi
 	String name;
 	String type;
 	int code = 0;
