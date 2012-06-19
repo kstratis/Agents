@@ -3,7 +3,7 @@
  */
 
 public class Lecture {
-
+//test1
 	String weeks;
 	String day;
 	String time;
